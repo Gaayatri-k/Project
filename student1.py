@@ -45,3 +45,12 @@ def add_student():
     students.append(new_student)
     write_students(students)
     print("Student added successfully.")
+def search_student():
+    students = read_students()
+    query = input("Enter Roll No or Name: ")
+    found = [s for s in students if s["Roll_No"] == query or query.lower() in s["Name"].lower()]
+    if not found:
+        print("Student not found.")
+    else:
+        for s in found:
+            print(s)
