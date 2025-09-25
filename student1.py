@@ -54,3 +54,15 @@ def search_student():
     else:
         for s in found:
             print(s)
+def update_student():
+    students = read_students()
+    roll = input("Enter Roll No to update: ")
+    for s in students:
+        if s["Roll_No"] == roll:
+            print(f"Old Attendance: {s['Attendance']}, Old Final Marks: {s['Final']}")
+            s["Attendance"] = input("Enter new Attendance % (Enter to skip): ") or s["Attendance"]
+            s["Final"] = input("Enter new Final Marks (Enter to skip): ") or s["Final"]
+            write_students(students)
+            print("✅ Record updated.")
+            return
+    print("Roll No not found.")
