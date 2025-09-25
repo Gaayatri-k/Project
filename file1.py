@@ -1,5 +1,7 @@
 import os
-import pandas as pd
-Filename="students.csv"
+import csv
+Filename="studentsmanagement.csv"
 if not os.path.exists(Filename):
-    data=pd.DataFrame(columns=[])
+    with open(Filename,mode="w",newline="") as file:
+        writer=csv.writer(file)
+        writer.writerow(["ID","Name","Age","Department"])
