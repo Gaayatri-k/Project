@@ -2,11 +2,11 @@ import csv
 import os
 import sys
 import statistics
-Filename="studentsmanagement.csv"
-Deletedfile="students_deleted.csv"
-Reportfolder="reports"
+Filename = "studentsmanagement.csv"
+Deletedfile = "students_deleted.csv"
+Reportfolder = "reports"
 def read_students():
-    if not os.path.exists():
+    if not os.path.exists(Filename):
         with open(Filename, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["Roll_No","Name","Branch","Year","Gender","Age",
@@ -21,22 +21,33 @@ def write_students(students):
 def ensure_reports_folder():
     if not os.path.exists(Reportfolder):
         os.makedirs(Reportfolder)
+def get_numeric_input(prompt, min_val=0, max_val=100):
+    while True:
+        try:
+            value = float(input(prompt))
+            if min_val <= value <= max_val:
+                return value
+            else:
+                print(f"Enter a number between {min_val} and {max_val}.")
+        except:
+            print("Enter a valid number.")
 def add_student():
     students = read_students()
-    roll = input("Enter Roll No: ")
+    roll = input("Enter Roll No: ").strip()
     if any(s["Roll_No"] == roll for s in students):
         print("Duplicate Roll No.")
         return
-    name = input("Enter Name: ")
-    branch = input("Enter Branch: ")
-    year = input("Enter Year: ")
-    gender = input("Enter Gender: ")
-    age = input("Enter Age: ")
-    attendance = input("Enter Attendance %: ")
-    mid1 = input("Mid1 Marks: ")
-    mid2 = input("Mid2 Marks: ")
-    quiz = input("Quiz Marks: ")
-    final = input("Final Marks: ")
+    name = input("Enter Name: ").strip()
+    branch = input("Enter Branch: ").strip()
+    year = input("Enter Year: ").strip()
+    gender = input("Enter Gender: ").strip()
+    age = input("Enter Age: ").strip()
+    attendance = str(get_numeric_input("Enter Attendance %: "))
+    mid1 = str(get_numeric_input("Mid1 Marks: "))
+    mid2 = str(get_numeric_input("Mid2 Marks: "))
+    quiz = str(get_numeric_input("Quiz Marks: "))
+    final = str(get_numeric_input("Final Marks: "))
+
     new_student = {
         "Roll_No": roll, "Name": name, "Branch": branch, "Year": year,
         "Gender": gender, "Age": age, "Attendance": attendance,
@@ -47,7 +58,7 @@ def add_student():
     print("Student added successfully.")
 def search_student():
     students = read_students()
-    query = input("Enter Roll No or Name: ")
+    query = input("Enter Roll No or Name: ").strip()
     found = [s for s in students if s["Roll_No"] == query or query.lower() in s["Name"].lower()]
     if not found:
         print("Student not found.")
@@ -56,22 +67,22 @@ def search_student():
             print(s)
 def update_student():
     students = read_students()
-    roll = input("Enter Roll No to update: ")
+    roll = input("Enter Roll No to update: ").strip()
     for s in students:
         if s["Roll_No"] == roll:
             print(f"Old Attendance: {s['Attendance']}, Old Final Marks: {s['Final']}")
-            s["Attendance"] = input("Enter new Attendance % (Enter to skip): ") or s["Attendance"]
-            s["Final"] = input("Enter new Final Marks (Enter to skip): ") or s["Final"]
+            s["Attendance"] = str(get_numeric_input("Enter new Attendance % (Enter to skip): ") or s["Attendance"])
+            s["Final"] = str(get_numeric_input("Enter new Final Marks (Enter to skip): ") or s["Final"])
             write_students(students)
             print("✅ Record updated.")
             return
     print("Roll No not found.")
 def delete_student():
     students = read_students()
-    roll = input("Enter Roll No to delete: ")
+    roll = input("Enter Roll No to delete: ").strip()
     for s in students:
         if s["Roll_No"] == roll:
-            confirm = input(f"Are you sure to delete {s['Name']}? (Y/N): ")
+            confirm = input(f"Are you sure to delete {s['Name']}? (Y/N): ").strip()
             if confirm.lower() == "y":
                 students.remove(s)
                 write_students(students)
@@ -85,8 +96,8 @@ def delete_student():
     print("Roll No not found.")
 def generate_report():
     students = read_students()
-    branch = input("Enter Branch: ")
-    year = input("Enter Year: ")
+    branch = input("Enter Branch: ").strip()
+    year = input("Enter Year: ").strip()
     subset = [s for s in students if s["Branch"] == branch and s["Year"] == year]
     if not subset:
         print("No data for given branch/year.")
@@ -106,7 +117,7 @@ def generate_report():
         writer.writerows(subset)
     print(f"Report exported: {fname}")
 def bulk_import():
-    file = input("Enter CSV file path to import: ")
+    file = input("Enter CSV file path to import: ").strip()
     if not os.path.exists(file):
         print("File not found.")
         return
@@ -134,13 +145,13 @@ def sort_filter():
     students = read_students()
     print("1. Sort by Final Marks")
     print("2. Filter by Attendance < threshold")
-    choice = input("Enter choice: ")
+    choice = input("Enter choice: ").strip()
     if choice == "1":
         sorted_list = sorted(students, key=lambda x: int(x["Final"]) if x["Final"].isdigit() else -1, reverse=True)
         for s in sorted_list:
             print(s)
     elif choice == "2":
-        th = int(input("Enter threshold %: "))
+        th = get_numeric_input("Enter threshold %: ", 0, 100)
         filtered = [s for s in students if s["Attendance"].isdigit() and int(s["Attendance"]) < th]
         for s in filtered:
             print(s)
@@ -157,7 +168,7 @@ def main_menu():
         print("6. Bulk Import")
         print("7. Sort / Filter")
         print("8. Exit")
-        choice = input("Enter choice: ")
+        choice = input("Enter choice: ").strip()
         if choice == "1": add_student()
         elif choice == "2": search_student()
         elif choice == "3": update_student()
@@ -169,6 +180,3 @@ def main_menu():
         else: print("Invalid choice. Try again.")
 if __name__ == "__main__":
     main_menu()
-
-
-
