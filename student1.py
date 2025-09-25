@@ -66,3 +66,20 @@ def update_student():
             print("✅ Record updated.")
             return
     print("Roll No not found.")
+def delete_student():
+    students = read_students()
+    roll = input("Enter Roll No to delete: ")
+    for s in students:
+        if s["Roll_No"] == roll:
+            confirm = input(f"Are you sure to delete {s['Name']}? (Y/N): ")
+            if confirm.lower() == "y":
+                students.remove(s)
+                write_students(students)
+                with open(Deletedfile, "a", newline="") as f:
+                    writer = csv.DictWriter(f, fieldnames=s.keys())
+                    if f.tell() == 0:
+                        writer.writeheader()
+                    writer.writerow(s)
+                print("Student deleted and archived.")
+            return
+    print("Roll No not found.")
