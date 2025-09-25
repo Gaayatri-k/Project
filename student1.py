@@ -14,7 +14,10 @@ def read_students():
     with open(Filename, newline="") as f:
         return list(csv.DictReader(f))
 def write_students(students):
-    with open(CSV_FILE, "w", newline="") as f:
+    with open(Filename, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=students[0].keys())
         writer.writeheader()
         writer.writerows(students)
+def ensure_reports_folder():
+    if not os.path.exists(Reportfolder):
+        os.makedirs(Reportfolder)
