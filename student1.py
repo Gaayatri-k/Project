@@ -13,3 +13,8 @@ def read_students():
                              "Attendance","Mid1","Mid2","Quiz","Final"])
     with open(Filename, newline="") as f:
         return list(csv.DictReader(f))
+def write_students(students):
+    with open(CSV_FILE, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=students[0].keys())
+        writer.writeheader()
+        writer.writerows(students)
